@@ -129,7 +129,7 @@ export function renderSkill(id) {
 
       <section class="card" aria-labelledby="skt-h"><div class="card-h"><h2 id="skt-h">${icon("target")}Test yourself</h2></div>
         <div class="card-b">
-          <p class="small muted" style="margin-bottom:10px">${ai ? "Claude writes 6 new questions at your level, grades your answers and explains them." : "A short quiz from the built-in question bank."}${sk.bank.length ? ` The built-in bank has ${sk.bank.length} questions.` : ""}</p>
+          <p class="small muted" style="margin-bottom:10px">${ai ? "AI writes 6 new questions at your level, grades your answers and explains them." : "A short quiz from the built-in question bank."}${sk.bank.length ? ` The built-in bank has ${sk.bank.length} questions.` : ""}</p>
           <div class="actions">${ai ? `<button class="btn btn-primary" type="button" data-act="test-ai" data-id="${id}">${icon("sparkle", "sm")}Start AI test</button>` : ""}
             ${sk.bank.length ? `<button class="btn" type="button" data-act="test-bank" data-id="${id}">Quick quiz (${Math.min(sk.bank.length, 5)} questions)</button>` : ""}</div>
           ${sk.tests.length ? `<h3 style="margin:14px 0 6px;font-size:14px">History</h3><ul class="test-hist">${[...sk.tests].reverse().slice(0, 6).map(t => `<li><span>${fmtDate(t.d)}</span><span>${t.ai ? "AI test" : "Quick quiz"}</span><b>${Math.round((t.score / t.total) * 100)}%</b><span class="muted">${t.score} of ${t.total}</span></li>`).join("")}</ul>` : ""}
@@ -330,7 +330,7 @@ function openTest(id, mode) {
       };
       if (questions) renderQs();
       else {
-        box.innerHTML = `<div class="ai-wait" role="status"><div class="spinner" aria-hidden="true"></div><p>Claude is writing your questions. This can take up to a minute.</p></div>`;
+        box.innerHTML = `<div class="ai-wait" role="status"><div class="spinner" aria-hidden="true"></div><p>AI is writing your questions. This can take up to a minute.</p></div>`;
         ctl = new AbortController();
         askJson(`You write short skill checks for a product designer preparing for interviews${inPlace()}. ${profileLine()}
 Skill: ${sk.name}. Why it matters: ${sk.why}. Their level now: ${sk.now} of 5; target ${sk.target} of 5.
@@ -383,7 +383,7 @@ export function openAddSkill() {
   const ai = aiVisible();
   let draft = null, ctl = null;
   sheet({
-    title: "Add a skill", sub: ai ? "Type a name. Claude can fill in why it matters, resources, projects, practice and questions for you to review." : "", wide: true,
+    title: "Add a skill", sub: ai ? "Type a name. AI can fill in why it matters, resources, projects, practice and questions for you to review." : "", wide: true,
     body: `<form class="form" novalidate>
       <div class="field"><label for="as-name">Skill</label><input id="as-name" type="text" name="nm" maxlength="120" placeholder="e.g. Service design"><p class="error" data-err hidden>Give the skill a name.</p></div>
       <div class="field"><label for="as-why">Why you want it <span class="muted">(optional)</span></label><textarea id="as-why" name="why" rows="2" maxlength="400"></textarea></div>
@@ -401,7 +401,7 @@ export function openAddSkill() {
         const nm = F.nm.value.trim();
         if (!nm) { $("[data-err]", el).hidden = false; F.nm.focus(); return; }
         fill.disabled = true;
-        box.innerHTML = `<div class="ai-wait" role="status"><div class="spinner" aria-hidden="true"></div><p>Claude is drafting this skill. This can take up to a minute.</p><button class="btn btn-sm" type="button" data-stop>Stop</button></div>`;
+        box.innerHTML = `<div class="ai-wait" role="status"><div class="spinner" aria-hidden="true"></div><p>AI is drafting this skill. This can take up to a minute.</p><button class="btn btn-sm" type="button" data-stop>Stop</button></div>`;
         ctl = new AbortController();
         $("[data-stop]", box).addEventListener("click", () => ctl.abort());
         try {

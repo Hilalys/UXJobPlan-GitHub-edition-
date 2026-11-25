@@ -28,6 +28,8 @@ import { renderStrategy, strategyActions, strategyChanges, strategyInputs } from
 import { initPractice, practiceActions } from "./practice.js";
 import { renderEvents, eventsActions, eventsChanges, setEventsTab } from "./views/events.js";
 import { renderUpdates, updatesActions, updatesChanges, updatesInputs, setTab as setFeedTab, newCount as feedNewCount } from "./views/updates.js";
+import { usesClaude } from "./ai.js";
+import { checkBrowserAi } from "./browser-ai.js";
 
 const NAV = [
   { g: "Stay current", items: [["updates", "What's new", "news"], ["events", "Events", "ticket"]] },
@@ -445,7 +447,7 @@ document.addEventListener("visibilitychange", () => { if (document.visibilitySta
   initTooltips();
   route = parseRoute();
   updateNav();
-  await store.init();
+  await Promise.all([store.init(), usesClaude() ? null : checkBrowserAi()]);
   initPractice();
   applyTheme();
   M.syncToday();

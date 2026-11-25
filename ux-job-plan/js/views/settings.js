@@ -12,9 +12,23 @@ import { esc, fmtDate, dowLong, parseYmd, today, toCsv, sum, $ } from "../util.j
 import { icon, sheet, toast, confirmSheet } from "../ui.js";
 import * as M from "../model.js";
 import { bus } from "../bus.js";
+import { usesClaude } from "../ai.js";
+import { browserAiStatus, prepareBrowserAi } from "../browser-ai.js";
 
 let pendingRestore = null;
 let restoreError = "";
+let aiSetup = "";
+
+function aiSettings(st) {
+  const status = browserAiStatus();
+  if (usesClaude() || status === "available") return `
+    <label class="switch"><input type="checkbox" data-change="set-ai" ${st.aiOn ? "checked" : ""}> AI suggestions</label>
+    <p class="hint muted small">${usesClaude() ? "Suggestions you request use Claude." : "Suggestions use Chrome's built-in model and stay on this device."} AI doesn't search the web, so check what it suggests.</p>`;
+  if (status === "unavailable") return `<p class="hint muted small">On-device AI needs a supported desktop version of Chrome and compatible hardware. You can still use the planner without AI. <a href="https://developer.chrome.com/docs/ai/get-started#hardware" target="_blank" rel="noopener noreferrer">Check Chrome's requirements</a>.</p>${aiSetup ? `<p role="alert">${esc(aiSetup)}</p>` : ""}`;
+  return `<p class="hint muted small">Chrome needs to download its AI model once. After that, AI suggestions run on this device without an account or API key.</p>
+    <div class="actions"><button type="button" class="btn" data-act="prepare-browser-ai" ${aiSetup.startsWith("Downloading") ? "disabled" : ""}>Set up on-device AI</button></div>
+    <p class="hint" id="browser-ai-status" role="status">${esc(aiSetup)}</p>`;
+}
 
 export function renderSettings() {
   const st = S.settings;
@@ -57,8 +71,7 @@ export function renderSettings() {
 
     <section class="card" aria-labelledby="sai-h"><div class="card-h"><h2 id="sai-h">${icon("sparkle")}AI</h2></div>
       <div class="card-b form">
-        <label class="switch"><input type="checkbox" data-change="set-ai" ${st.aiOn ? "checked" : ""}> AI suggestions</label>
-        <p class="hint muted small">When this page runs inside Claude, Claude can fill in skill pages, find resources, tailor your resume and give interview feedback, using what you write in About you. It works from its own knowledge, not a live web search, so check what it suggests. Opened anywhere else (for example on GitHub Pages), AI buttons stay hidden and everything else works by hand.</p>
+        ${aiSettings(st)}
       </div></section>
 
     <section class="card" aria-labelledby="sb-h"><div class="card-h"><h2 id="sb-h">${icon("download")}Backup and export</h2></div>
@@ -270,35 +283,46 @@ function locationCard(st) {
 function aboutCard(st, me) {
   const pv = previewPlan();
   const p = st.profile;
-  const lvlSel = sk => `<label class="sr-only" for="lv-${sk.id}">${esc(sk.name)}: your level</label><select id="lv-${sk.id}" class="inline-sel" data-change="set-me-level" data-id="${sk.id}">${LEVEL_WORDS.map((w, i) => `<option value="${i}" ${levelOf(me, sk.id) === i ? "selected" : ""}>${i} · ${w}</option>`).join("")}</select>`;
-  const rows = SKILLS.map(sk => `<tr><th scope="row">${esc(sk.name)}</th><td>${lvlSel(sk)}</td>
-    <td><label class="chk-inline"><input type="checkbox" data-change="set-me-focus" data-id="${sk.id}" ${me.focus.includes(sk.id) ? "checked" : ""}><span class="sr-only">Focus on ${esc(sk.name)}</span></label></td>
-    <td class="muted">${targetOf(me, sk)}</td></tr>`).join("");
+  const rows = SKILLS.map(sk => `<li class="about-skill">
+    <span class="about-skill-name">${esc(sk.name)}</span>
+    <div class="about-skill-controls">
+      <select aria-label="Level for ${esc(sk.name)}" data-change="set-me-level" data-id="${sk.id}">${LEVEL_WORDS.map((w, i) => `<option value="${i}" ${levelOf(me, sk.id) === i ? "selected" : ""}>${i} · ${w}</option>`).join("")}</select>
+      <label class="about-option"><input type="checkbox" data-change="set-me-focus" data-id="${sk.id}" ${me.focus.includes(sk.id) ? "checked" : ""}><span>Focus<span class="sr-only"> on ${esc(sk.name)}</span></span></label>
+      <span class="about-skill-target">Target <b>${targetOf(me, sk)}</b></span>
+    </div></li>`).join("");
   return `<section class="card about-card" aria-labelledby="sme-h"><div class="card-h"><h2 id="sme-h">${icon("idcard")}About you</h2><span class="sub">Shapes your plan</span></div>
-    <div class="card-b form">
-      <p class="hint muted small" style="margin-top:0">Optional. Leave it as it is and you get the full built-in plan, with every skill starting at 0. Fill it in and rebuild to fit the plan to you. Everything stays on this device${hasCloud() ? " and in your account" : ""}.</p>
+    <div class="card-b about-form">
+      <p class="about-hint">Optional. You can use the full plan as it is or customize it here and rebuild. Your planner data is saved ${hasCloud() ? "on this device and in your account" : "on this device"}.</p>
+      <section class="about-section" aria-labelledby="me-profile">
+      <h3 id="me-profile">Your background</h3>
       <div class="loc-grid">
         <div class="field"><label for="pf-name">Name</label><input id="pf-name" type="text" value="${esc(p.name)}" data-change="set-profile" data-f="name" maxlength="80" autocomplete="name"></div>
         <div class="field"><label for="pf-role">Current title</label><input id="pf-role" type="text" value="${esc(p.role)}" data-change="set-profile" data-f="role" maxlength="120" placeholder="e.g. UI/UX Designer, student"></div>
       </div>
       <div class="field"><label for="pf-target">What you're looking for</label><input id="pf-target" type="text" value="${esc(p.target)}" data-change="set-profile" data-f="target" maxlength="200" placeholder="e.g. Product or UX Designer roles, mobile and web"></div>
-      <div class="field"><label for="pf-summary">Your experience, in a few lines</label><textarea id="pf-summary" rows="5" data-change="set-profile" data-f="summary" maxlength="4000" placeholder="Roles, years, tools, projects, what you're building now.">${esc(p.summary || "")}</textarea>
-        <p class="hint">AI features read this to know your experience. They never add facts that aren't here or in your resume.</p></div>
+      <div class="field"><label for="pf-summary">Your experience, in a few lines</label><textarea id="pf-summary" rows="4" data-change="set-profile" data-f="summary" maxlength="4000" aria-describedby="me-summary-hint" placeholder="Roles, years, tools, projects, what you're building now.">${esc(p.summary || "")}</textarea>
+        <p class="about-hint" id="me-summary-hint">Optional AI suggestions use this context. Review suggestions for accuracy.</p></div>
+      </section>
 
-      <h3 class="h-sm" style="margin-top:6px">Your plan</h3>
-      <div class="loc-grid">
-        <div class="field"><label for="me-hours">Hours a week</label><input id="me-hours" type="number" min="5" max="60" step="1" inputmode="numeric" value="${me.hours}" data-change="set-me-hours" style="max-width:120px">
-          <p class="hint">The built-in plan assumes 35. Fewer hours spread it over more weeks.</p></div>
-        <fieldset class="field" style="border:0;padding:0;margin:0"><legend class="lbl">Goal</legend>
-          ${Object.entries(MODES).map(([k, l]) => `<label class="switch" style="display:flex"><input type="radio" name="me-mode" value="${k}" data-change="set-me-mode" ${me.mode === k ? "checked" : ""}> ${l}</label>`).join("")}</fieldset>
+      <section class="about-section" aria-labelledby="me-plan">
+      <h3 id="me-plan">Your plan</h3>
+      <div class="about-plan-fields">
+        <div class="field"><label for="me-hours">Hours a week</label><input id="me-hours" type="number" min="5" max="60" step="1" inputmode="numeric" value="${me.hours}" data-change="set-me-hours" aria-describedby="me-hours-hint">
+          <p class="about-hint" id="me-hours-hint">The default is 35 hours. Fewer hours spread the plan over more weeks.</p></div>
+        <fieldset><legend>Goal</legend>
+          ${Object.entries(MODES).map(([k, l]) => `<label class="about-option"><input id="me-mode-${k}" type="radio" name="me-mode" value="${k}" data-change="set-me-mode" ${me.mode === k ? "checked" : ""}><span>${l}</span></label>`).join("")}</fieldset>
+        <fieldset><legend>I already have</legend>
+          ${HAVES.map(([k, l, h]) => `<label class="about-option" data-tip="${esc(h)}"><input type="checkbox" data-change="set-me-have" data-k="${k}" ${me.have.includes(k) ? "checked" : ""}><span>${l}</span></label>`).join("")}</fieldset>
       </div>
-      <fieldset class="field" style="border:0;padding:0;margin:0"><legend class="lbl">I already have</legend>
-        ${HAVES.map(([k, l, h]) => `<label class="switch" style="display:flex" data-tip="${esc(h)}"><input type="checkbox" data-change="set-me-have" data-k="${k}" ${me.have.includes(k) ? "checked" : ""}> ${l}</label>`).join("")}</fieldset>
-      <div class="field"><span class="lbl" id="me-sk-l">Where you are with each skill</span>
-        <p class="hint" style="margin-top:0">0 is new to it, 5 is expert. Learning tasks for skills already at their target are left out. Focus raises a skill's target by one and keeps all its tasks.</p>
-        <div class="scroll-x"><table class="loop-t me-skills" aria-labelledby="me-sk-l"><thead><tr><th scope="col">Skill</th><th scope="col">Your level</th><th scope="col">Focus</th><th scope="col">Target</th></tr></thead><tbody>${rows}</tbody></table></div></div>
-      <div class="rebuild-bar" role="status">
-        <p><b>${pv.weeks} weeks</b> · ${pv.tasks} tasks · ${Math.round(pv.hours)} hours${pv.skipped ? ` · ${pv.skipped} left out` : ""}<br><span class="muted small">${me.built ? "Your plan was built from this profile. Rebuild after changes." : "Changes apply when you rebuild the plan."}</span></p>
+      </section>
+
+      <section class="about-section" aria-labelledby="me-sk-l">
+        <div><h3 id="me-sk-l">Your skill levels</h3>
+        <p class="about-hint">Choose your level from 0 (new) to 5 (expert). Reaching the target skips that skill's learning tasks. Focus raises the target by one and keeps those tasks.</p></div>
+        <ul class="about-skills" role="list">${rows}</ul>
+      </section>
+      <div class="rebuild-bar">
+        <p role="status"><b>${pv.weeks} weeks</b> · ${pv.tasks} tasks · ${Math.round(pv.hours)} hours${pv.skipped ? ` · ${pv.skipped} left out` : ""}<br><span class="about-hint">${me.built ? "Your plan was built from this profile. Rebuild after changes." : "Changes apply when you rebuild the plan."}</span></p>
         <button class="btn btn-primary" type="button" data-act="plan-rebuild">${icon("wand", "sm")}Rebuild my plan</button>
       </div>
     </div></section>`;
@@ -365,6 +389,28 @@ function setLoc(el) {
 const meSet = fn => { const me = normMe(S.settings.me); fn(me); S.settings.me = me; save("settings"); bus.render(); };
 
 export const settingsActions = {
+  "prepare-browser-ai": async (_data, event) => {
+    if (!["downloadable", "downloading"].includes(browserAiStatus()) || aiSetup.startsWith("Downloading")) return;
+    event.target.closest("button").disabled = true;
+    const progress = percent => {
+      aiSetup = percent == null ? "Downloading Chrome's AI model…" : `Downloading Chrome's AI model… ${percent}%`;
+      const status = document.getElementById("browser-ai-status");
+      if (status) status.textContent = aiSetup;
+    };
+    progress();
+    try {
+      await prepareBrowserAi(progress);
+      S.settings.aiOn = true;
+      save("settings");
+      aiSetup = "";
+      toast("On-device AI is ready");
+    } catch {
+      aiSetup = "Chrome couldn't set up its AI model. Check your connection and available disk space, then try again.";
+      toast(aiSetup);
+    }
+    bus.render();
+    document.querySelector('[data-change="set-ai"], [data-act="prepare-browser-ai"]')?.focus();
+  },
   "plan-rebuild": () => openRebuild(),
   "plan-restart": () => openRestart(),
   "setup-hide": () => { S.settings.setupHidden = true; save("settings"); bus.render(); }

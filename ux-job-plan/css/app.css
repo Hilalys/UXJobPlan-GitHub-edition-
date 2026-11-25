@@ -1667,10 +1667,34 @@ details.fold[open] > summary { padding-bottom: 0; }
 /* ---- Shared edition: location, about you, rebuild ---- */
 .loc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; }
 .loc-grid .field { margin: 0; }
-.about-card { grid-column: 1 / -1; }
-.me-skills select.inline-sel { min-width: 150px; }
-.me-skills td, .me-skills th { vertical-align: middle; }
-.me-skills .chk-inline input { width: 18px; height: 18px; accent-color: var(--primary); }
+.about-card { grid-column: 1 / -1; min-width: 0; }
+.about-form { display: grid; gap: 24px; container-type: inline-size; }
+.about-section { display: grid; gap: 12px; padding-top: 20px; border-top: 1px solid var(--line); }
+.about-section h3 { font-size: 18px; }
+.about-hint { font-size: 14px; color: var(--ink-2); max-width: 70ch; }
+.about-section h3 + .about-hint { margin-top: 4px; }
+.about-plan-fields { display: grid; gap: 16px 24px; align-items: start; }
+.about-plan-fields fieldset { min-width: 0; border: 0; padding: 0; margin: 0; }
+.about-plan-fields legend { padding: 0; margin-bottom: 6px; font-size: 13.5px; font-weight: 700; }
+.about-plan-fields input[type="number"] { max-width: 8rem; }
+.about-option { display: flex; align-items: center; gap: 8px; min-height: 44px; cursor: pointer; }
+.about-option input { width: 18px; height: 18px; margin: 0; flex: none; accent-color: var(--primary); }
+.about-option:has(input:focus-visible) { outline: 3px solid var(--focus); outline-offset: 1px; border-radius: 4px; }
+.about-option input:focus-visible { outline-offset: 2px; }
+.about-skills { list-style: none; margin: 0; padding: 0; }
+.about-skill { display: grid; align-items: center; gap: 6px 16px; padding: 10px 0; border-top: 1px solid var(--line); }
+.about-skill-name { font-weight: 600; overflow-wrap: anywhere; }
+.about-skill-controls { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 0 12px; }
+.about-skill-controls select { min-width: 0; min-height: 44px; }
+.about-skill-target { color: var(--ink-2); font-size: 13px; }
+@container (min-width: 34rem) {
+  .about-skill { grid-template-columns: minmax(0, 1fr) minmax(18.5rem, 1.1fr); }
+  .about-skill-controls { grid-template-columns: minmax(0, 1fr) 5rem 4rem; gap: 12px; }
+}
+@container (min-width: 44rem) {
+  .about-plan-fields { grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr) minmax(0, 1.25fr); }
+}
 .rebuild-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding: 12px 14px; border-radius: 12px; background: var(--surface-2); margin-top: 4px; }
 .rebuild-bar p { margin: 0; }
+.about-form .rebuild-bar .btn { min-height: 44px; }
 .banner.setup { background: var(--purple-soft); }

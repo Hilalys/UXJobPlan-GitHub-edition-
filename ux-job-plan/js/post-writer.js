@@ -72,7 +72,7 @@ export function buildPrompt({ type, chips, notes, topic, draft, earlier = [] }, 
     return sel.length ? `- ${g.label}: ${sel.join("; ")}` : "";
   }).filter(Boolean);
   const lines = [
-    `Write a LinkedIn post for a product designer, in their voice, first person.${forPreview ? " (Claude also gets your profile from Settings.)" : " " + profileLine()}`,
+    `Write a LinkedIn post for a product designer, in their voice, first person.${forPreview ? " (AI also gets your profile from Settings.)" : " " + profileLine()}`,
     "",
     `Post type: ${t.p}.`,
     `Topic: ${topic || "(add a topic)"}`,
@@ -95,7 +95,7 @@ function chipBtn(id, inZone) {
 }
 export function writerHTML() {
   return `<details class="pw" open data-pw>
-    <summary class="pw-sum"><span class="chev">${icon("chev", "sm")}</span><b>${icon("sparkle", "sm")}Write it with Claude</b><span class="muted small" data-pw-count></span></summary>
+    <summary class="pw-sum"><span class="chev">${icon("chev", "sm")}</span><b>${icon("sparkle", "sm")}Write it with AI</b><span class="muted small" data-pw-count></span></summary>
     <div class="pw-body">
       <div class="field"><span class="lbl" id="pw-type-l">What kind of post?</span>
         <div class="pw-types" role="radiogroup" aria-labelledby="pw-type-l" data-pw-types></div></div>

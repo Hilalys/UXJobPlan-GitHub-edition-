@@ -177,7 +177,7 @@ export function renderEvents(selId = "") {
     ${tab === "month" ? monthView(sel) : tab === "past" ? pastView(sel) : upcomingView(sel)}`;
   const missing = selId && !sel;
   return `<header class="page-h"><div><div class="eyebrow">Stay current</div><h1>Events</h1>
-      <p class="lead">Meetups, workshops, conferences, coffee chats and interviews, months ahead. Open an event and Claude helps you prepare in a way that fits it: what to brush up on, what to bring and set up, questions to ask, and steps you can add to your weekly plan.</p></div>
+      <p class="lead">Meetups, workshops, conferences, coffee chats and interviews, months ahead. Open an event to plan what to brush up on, what to bring, which questions to ask, and which steps to add to your weekly plan.</p></div>
     <div class="evp-head-r"><div class="fd-stats" aria-label="Summary"><span><b>${week}</b> this week</span><span><b>${three}</b> next 3 months</span><span><b>${prepped}</b> of ${up.length} prepped</span></div>
       <button class="btn btn-primary" type="button" data-act="add-event">${icon("plus", "sm")}Add event</button></div></header>
   ${missing ? `<p class="hint warn-note" role="status">${icon("alert", "sm")}That event isn't in your list anymore. It may have been deleted.</p>` : ""}
@@ -222,7 +222,7 @@ function prepCard(e, p) {
   const form = `<div class="form evp-form">
       <div class="field"><label for="evp-about">About the event <span class="muted">(optional)</span></label>
         <textarea id="evp-about" rows="4" maxlength="4000" data-change="evp-about" data-id="${e.id}" placeholder="Paste the description from the event page: the agenda, speakers' topics, what you'll build.">${esc(e.about || "")}</textarea>
-        <p class="hint">Claude can't open links, so the more of the event page you paste, the better the prep fits.</p></div>
+        <p class="hint">AI can't open links, so paste the relevant details from the event page.</p></div>
       <fieldset class="field evp-fs"><legend class="lbl">What do you want from it?</legend>
         <div class="chips">${GOALS.map(([v, l]) => `<label class="chip evp-chip"><input type="checkbox" value="${v}" data-change="evp-goal" data-id="${e.id}" ${ask.goals.includes(v) ? "checked" : ""}>${l}</label>`).join("")}</div></fieldset>
       <fieldset class="field evp-fs"><legend class="lbl">How well do you know the topic?</legend>
@@ -232,13 +232,13 @@ function prepCard(e, p) {
       <div class="evp-run">${running ? "" : `<button class="btn btn-primary" type="button" data-act="evp-run" data-id="${e.id}">${icon(ai ? "sparkle" : "check", "sm")}${ai ? (r ? "Prepare again" : "Prepare with AI") : (r ? "Make the checklist again" : "Make a checklist")}</button>
         ${ai && !r ? `<button class="btn btn-ghost" type="button" data-act="evp-basic" data-id="${e.id}">Basic checklist instead</button>` : ""}`}</div>
     </div>`;
-  const wait = running ? `<div class="ai-wait" role="status"><div class="spinner" aria-hidden="true"></div><p>Claude is planning your prep for this ${esc(e.type.toLowerCase())}. This can take up to a minute.</p><button class="btn btn-sm" type="button" data-act="evp-stop">Stop</button></div>` : "";
+  const wait = running ? `<div class="ai-wait" role="status"><div class="spinner" aria-hidden="true"></div><p>AI is planning your prep for this ${esc(e.type.toLowerCase())}. This can take up to a minute.</p><button class="btn btn-sm" type="button" data-act="evp-stop">Stop</button></div>` : "";
   const errHtml = err ? `<p class="error" role="alert">${esc(err)}${ai ? ` <button class="btn btn-sm" type="button" data-act="evp-basic" data-id="${e.id}">Use a basic checklist</button>` : ""}</p>` : "";
   return `<section class="card evp-prep" aria-labelledby="evpp-h">
     <div class="card-h"><h2 id="evpp-h">${icon("sparkle")}Prepare</h2>${r ? `<span class="sub">${p.ai ? "AI draft" : "Basic checklist"} · ${esc(fmtDate(p.at, { year: true }))}</span>` : ""}</div>
     <div class="card-b">
       ${r ? `<details class="evp-ask"><summary>Your answers${ask.goals.length ? `: ${esc(ask.goals.map(g => (GOALS.find(x => x[0] === g) || [, g])[1]).join(", ").toLowerCase())}` : ""}</summary>${form}</details>`
-        : `<p class="small muted" style="margin:0 0 10px">${ai ? "Answer a few questions and Claude plans your prep for this event: what to review first, what to bring or set up, what to ask, and when to do each step." : "AI is off, so you'll get a basic checklist for this kind of event. Turn AI on in Settings for prep that fits this event."}</p>${form}`}
+        : `<p class="small muted" style="margin:0 0 10px">${ai ? "Answer a few questions and AI suggests what to review, what to bring, and what to ask." : "Without AI, you'll get a reusable checklist for this kind of event."}</p>${form}`}
       ${wait}${errHtml}
       ${r && !running ? result(e, p) : ""}
     </div></section>`;
@@ -260,7 +260,7 @@ function result(e, p) {
     ${r.read || r.goal ? `<div class="evp-read">${r.read ? `<p>${esc(r.read)}</p>` : ""}${r.goal ? `<p class="evp-goal">${icon("target", "sm")}<span><b>Aim:</b> ${esc(r.goal)}</span></p>` : ""}</div>` : ""}
     ${sec("Brush up first", "book", r.brushUp.length ? `<ul class="evp-plain">${r.brushUp.map(b => `<li><b>${esc(b.topic)}</b>${b.minutes ? ` <span class="muted small">· ${mins(b.minutes)}</span>` : ""}${b.why ? `<br><span class="small">${esc(b.why)}</span>` : ""}</li>`).join("")}</ul>` : "")}
     ${sec("From your library", "folder", lib.length ? `<ul class="evp-plain">${lib.map(x => `<li><a href="${esc(x.res.url || "#resources")}" ${x.res.url ? `target="_blank" rel="noopener noreferrer"` : ""}><b>${esc(x.res.title)}</b></a> <span class="muted small">· ${esc(x.res.type)}${x.res.status === "done" ? " · finished" : x.res.status === "doing" ? " · in progress" : ""}</span>${x.why ? `<br><span class="small">${esc(x.why)}</span>` : ""}</li>`).join("")}</ul>` : "")}
-    ${sec("More to review", "news", r.suggest.length ? `<p class="small muted" style="margin:0 0 6px">Suggested by Claude from what it knows. Links say "Not checked" until you open them.</p><ul class="evp-plain">${r.suggest.map((x, i) => `<li><b>${esc(x.title)}</b> <span class="muted small">· ${[x.source, x.type, mins(x.minutes)].filter(Boolean).map(esc).join(" · ")}</span>${x.why ? `<br><span class="small">${esc(x.why)}</span>` : ""}
+    ${sec("More to review", "news", r.suggest.length ? `<p class="small muted" style="margin:0 0 6px">Suggested by AI. Links say "Not checked" until you open them.</p><ul class="evp-plain">${r.suggest.map((x, i) => `<li><b>${esc(x.title)}</b> <span class="muted small">· ${[x.source, x.type, mins(x.minutes)].filter(Boolean).map(esc).join(" · ")}</span>${x.why ? `<br><span class="small">${esc(x.why)}</span>` : ""}
         <span class="evp-links">${x.url ? `<a href="${esc(x.url)}" target="_blank" rel="noopener noreferrer">${esc(host(x.url))}<span class="sr-only"> (opens in a new tab)</span></a><span class="tag warn">Not checked</span>` : ""}<a href="${esc(searchUrl(x))}" target="_blank" rel="noopener noreferrer">${x.type === "Video" ? "Search YouTube" : "Search the web"}<span class="sr-only"> for ${esc(x.title)} (opens in a new tab)</span></a>
         ${x.added && M.resById(x.added) ? `<span class="muted small">${icon("check", "sm")}In your library</span>` : `<button class="btn btn-sm btn-ghost" type="button" data-act="evp-lib" data-id="${e.id}" data-i="${i}">${icon("plus", "sm")}Save to library</button>`}</span></li>`).join("")}</ul>` : "")}
     ${sec("Checklist", "check", r.steps.length ? `<ul class="evp-check">${r.steps.map((s, i) => {

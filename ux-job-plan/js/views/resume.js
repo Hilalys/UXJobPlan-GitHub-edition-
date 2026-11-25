@@ -383,8 +383,8 @@ function aiCard(res) {
   if (!aiVisible()) return "";
   const last = S.resume.review && S.resume.review.vid === res.id ? S.resume.review : null;
   return `<section class="card re-ai" aria-labelledby="rai-h"><div class="card-b">
-    <h2 id="rai-h" class="re-ai-t">${icon("sparkle")}Get help from Claude</h2>
-    <p class="small muted">Claude works only with what's in this version and what you tell it. It never adds numbers or facts you didn't give it.</p>
+    <h2 id="rai-h" class="re-ai-t">${icon("sparkle")}Get help with AI</h2>
+    <p class="small muted">Suggestions use this version and what you tell the app. Check that any numbers or facts in a draft are accurate.</p>
     <div class="re-ai-acts"><button class="btn btn-sm" type="button" data-act="rv-ai-review">${icon("review", "sm")}Review my resume</button>
       <button class="btn btn-sm" type="button" data-act="rv-ai-summary">${icon("file", "sm")}${res.sections.some(s => s.kind === "text" && /summary|profile|about/i.test(s.title) && (s.text || "").trim()) ? "Improve my summary" : "Write my summary"}</button>
       <button class="btn btn-sm" type="button" data-act="rv-ai-fit">${icon("move", "sm")}Fit on one page</button></div>
@@ -409,7 +409,7 @@ function openBulletHelper(d) {
   const r = curRes(), it = item(r, d), b = bullet(r, d); if (!b) return;
   let ctl = null;
   sheet({
-    title: "Improve this bullet", sub: "Claude rewrites it as problem, action, result. It never adds numbers or facts that aren't already there.", wide: true,
+    title: "Improve this bullet", sub: "AI rewrites it as problem, action, result. Check any numbers or facts before using the draft.", wide: true,
     body: `<div class="form"><div class="field"><span class="lbl">Now</span><p class="quote">${esc(b.text || "(empty)")}</p></div>
       <div class="field"><label for="bh-n">Anything to add? <span class="muted">(optional; only true details)</span></label><input id="bh-n" type="text" maxlength="300" placeholder="e.g. it was used by the sales team every day"></div>
       <div><button class="btn btn-primary" type="button" data-go>${icon("sparkle", "sm")}Suggest rewrites</button></div><div data-out></div></div>`,

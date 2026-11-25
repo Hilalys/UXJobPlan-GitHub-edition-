@@ -123,7 +123,7 @@ export async function writeSummary(n) {
   ctl?.abort();
   ctl = new AbortController();
   const before = ta.value;
-  box.innerHTML = `<div class="ai-wait" role="status"><div class="spinner" aria-hidden="true"></div><p>Claude is reading your week. This can take up to a minute.</p><button class="btn btn-sm" type="button" data-stop>Stop</button></div>`;
+  box.innerHTML = `<div class="ai-wait" role="status"><div class="spinner" aria-hidden="true"></div><p>AI is reading your week. This can take up to a minute.</p><button class="btn btn-sm" type="button" data-stop>Stop</button></div>`;
   $("[data-stop]", box).addEventListener("click", () => ctl.abort());
   try {
     const text = await askText(`Write a short weekly review of ${S.settings.profile.name}'s job-search plan for week ${n}. Use only the data below and don't invent anything. Write 4–6 plain sentences, encouraging but honest: what moved, what slipped, any pattern (for example a track running over or under its planned hours, or tasks taking longer than estimated), and one concrete suggestion for next week. No headings, no lists, no greeting.

@@ -1,0 +1,29 @@
+[
+  {
+    "run": "",
+    "items": [
+      {
+        "title": "Experience Design: Dropping the “User” from “User Experience”",
+        "url": "https://www.nngroup.com/articles/ux-vs-experience-design/",
+        "source": "Nielsen Norman Group",
+        "type": "Article",
+        "topics": ["ai-ux"],
+        "published": "2026-10-30"
+      },
+      {
+        "title": "When to Use Which User-Experience Research Methods",
+        "url": "https://www.nngroup.com/articles/which-ux-research-methods/",
+        "source": "Nielsen Norman Group",
+        "type": "Article",
+        "topics": ["research"]
+      },
+      {
+        "title": "10 Usability Heuristics for User Interface Design",
+        "url": "https://www.nngroup.com/articles/ten-usability-heuristics/",
+        "source": "Nielsen Norman Group",
+        "type": "Article",
+        "topics": ["testing", "visual"]
+      }
+    ]
+  }
+]

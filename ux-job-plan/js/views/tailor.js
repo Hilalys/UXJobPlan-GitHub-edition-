@@ -162,7 +162,7 @@ function matchStep(c) {
         </div></div></section>
     <section class="card" aria-labelledby="tm-fit"><div class="card-h"><h2 id="tm-fit">How well you match</h2></div><div class="card-b">
       ${m ? `<p class="fit fit-${esc(m.fit)}"><b>${esc({ strong: "Strong fit", good: "Good fit", stretch: "Stretch" }[m.fit] || "Fit")}</b>${Number.isFinite(m.score) ? ` · ${m.score} of 100` : ""}</p>
-        ${m.why?.length ? `<ul class="plain small">${m.why.map(w => `<li>${esc(w)}</li>`).join("")}</ul>` : ""}<p class="muted small" style="margin-top:8px">${icon("sparkle", "sm")} Claude's read of the posting. Use it as a second opinion.</p>`
+        ${m.why?.length ? `<ul class="plain small">${m.why.map(w => `<li>${esc(w)}</li>`).join("")}</ul>` : ""}<p class="muted small" style="margin-top:8px">${icon("sparkle", "sm")} AI's read of the posting. Use it as a second opinion.</p>`
         : `<p class="muted">Turn on AI in Settings for a fit read. The keyword check works without it.</p>`}
       ${suggestedBase ? `<div class="tl-base"><p class="small">A better starting point might be <b>${esc(suggestedBase.name)}</b>.</p><button class="btn btn-sm" type="button" data-act="tl-base" data-id="${suggestedBase.id}">Switch to it</button></div>` : ""}
     </div></section>
