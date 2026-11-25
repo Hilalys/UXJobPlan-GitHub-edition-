@@ -10,7 +10,7 @@ UX Job Plan is a free, open-source browser app that turns a UX or product design
 
 ## How to use this tool
 
-1. [Open UX Job Plan](https://hilalys.github.io/UXJobPlan-GitHub-edition-/) in your browser. You don't need a GitHub account, an installation, or any code. If the link shows a GitHub 404 page, the app hasn't been published yet.
+1. [Open UX Job Plan](https://hilalys.github.io/UXJobPlan-GitHub-edition-/) in your browser. No account, download, or coding is needed. If the app isn't available, you can watch the demo above.
 2. **Start with one task.** Open **Weekly plan**, choose a task to see its steps, links, and time estimate, and check it off when you're done.
 3. **Make it fit your schedule (optional).** In the app, open **Settings → About you** to set your weekly hours, goal, and skill levels. Choose **Rebuild my plan** and pick a start date. Add your city in **Settings → Location** if you want local links and events.
 4. **Track your progress.** Open **Weekly review** to see what you completed. Use **Applications** to save roles and track next steps.
@@ -68,47 +68,13 @@ Screenshots show demo data for a fictional designer in Austin, TX.
 
 ## AI features
 
-On GitHub Pages or localhost, go to **Settings → AI** in a [supported desktop version of Chrome](https://developer.chrome.com/docs/modern-web-guidance/guides/built-in-ai/language-model). Choose **Set up on-device AI** if Chrome needs to download its model, or turn on **AI suggestions** if it is already installed. No account or API key is needed. This is optional: the planner and weekly reading list work in other browsers too.
+In a [supported desktop version of Chrome](https://developer.chrome.com/docs/modern-web-guidance/guides/built-in-ai/language-model), open the app and go to **Settings → AI**. Choose **Set up on-device AI** if Chrome needs to download its model, or turn on **AI suggestions** if it is already installed. No account or API key is needed. This is optional: the planner and weekly reading list work in other browsers too.
 
 AI can help draft skill plans, tailor resume text, and give practice feedback. It doesn't browse the web, and drafts can be wrong, so review them before using them. Inside a Claude artifact, the existing Claude AI and scheduled feed still work when enabled there.
 
 ## Privacy
 
-On GitHub Pages and localhost, your planner data and reading history are stored in your browser's `localStorage` (keys start with `uxjp:`). Chrome downloads its AI model once and then runs suggestions on your device. The public feed is the same for every visitor. If you instead use the app as a Claude artifact, the artifact may use your Claude account to sync data or generate suggestions.
-
-## Run it yourself (for contributors)
-
-ES modules don't load from `file://`, so serve the app folder from the repository root:
-
-```bash
-python3 -m http.server 8000 --directory ux-job-plan
-# open http://localhost:8000
-```
-
-### GitHub Pages
-
-From the GitHub repository, choose **Settings → Pages → Source → GitHub Actions**. Then go to **Actions → Publish UX Job Plan → Run workflow** on `main`. The workflow publishes the `ux-job-plan/` folder at `https://<user>.github.io/<repo>/`. It also runs on pushes to `main` and every Sunday. Fork owners may need to enable scheduled workflows in **Actions**.
-
-The workflow collects public links from Nielsen Norman Group and Smashing Magazine. No job-search data is involved. If neither publisher can be reached, the workflow leaves the previous deployment in place. The local app includes starter articles without needing the workflow.
-
-### Project layout
-
-Paths below are relative to [`ux-job-plan/`](ux-job-plan/):
-
-```text
-index.html            app shell
-css/app.css           design system and layout
-js/app.js             routing, actions and events
-js/store.js           state, saving, backup and restore
-js/plan-data.js       the built-in 25-week plan (tasks, hours, phases)
-js/personalize.js     rebuilds the plan from the profile
-js/plan-tools.js      rebuild, start over, location updates
-js/locale.js          location tokens ({city}, {area} ...) and location-aware links
-js/content*.js        skills, resources, resume checklists, companies, interview content
-js/views/*.js         one file per page
-js/vendor/            embedded fonts for PDF export
-docs/                 screenshots and infographics
-```
+In the standalone web app, your planner data and reading history are stored in the browser you use. Chrome's optional AI runs on your device after a one-time model download. The public reading list is the same for every visitor. If you instead use the app inside Claude, it may use your Claude account to sync data or generate suggestions.
 
 ## Credit and license
 
