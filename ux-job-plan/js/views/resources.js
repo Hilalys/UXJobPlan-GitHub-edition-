@@ -218,7 +218,7 @@ export function openFindResources({ skill = "" } = {}) {
   const sk = skill ? M.skillById(skill) : null;
   let found = [], ctl = null;
   sheet({
-    title: "Find resources with AI", sub: "Claude suggests resources from what it knows. It can't browse the web, so links show \"Not checked\" until you open them.", wide: true,
+    title: "Find resources with AI", sub: "AI suggests resources without browsing the web, so links show \"Not checked\" until you open them.", wide: true,
     body: `<form class="form" novalidate>
       <div class="row2"><div class="field"><label for="fa-topic">Skill or topic</label><input id="fa-topic" type="text" name="topic" value="${esc(sk ? sk.name : "")}" maxlength="160" placeholder="e.g. Figma Motion, usability testing"><p class="error" data-err hidden>Add a topic.</p></div>
         <div class="field"><label for="fa-skill">Tag with skill</label><select id="fa-skill" name="skill"><option value="">None</option>${S.skills.list.map(s => `<option value="${s.id}" ${s.id === skill ? "selected" : ""}>${esc(s.name)}</option>`).join("")}</select></div></div>
@@ -238,7 +238,7 @@ export function openFindResources({ skill = "" } = {}) {
         const lim = $$("input[name=lim]:checked", el).map(x => x.value);
         const limText = { free: "free only", video: "videos", book: "books", course: "courses", short: "under 5 hours each" };
         const have = S.resources.list.map(r => r.title).slice(0, 120);
-        out.innerHTML = `<div class="ai-wait" role="status"><div class="spinner" aria-hidden="true"></div><p>Claude is looking through what it knows. This can take up to a minute.</p><button class="btn btn-sm" type="button" data-stop>Stop</button></div>`;
+        out.innerHTML = `<div class="ai-wait" role="status"><div class="spinner" aria-hidden="true"></div><p>AI is suggesting resources. This can take up to a minute.</p><button class="btn btn-sm" type="button" data-stop>Stop</button></div>`;
         add.hidden = true;
         ctl = new AbortController();
         $("[data-stop]", out).addEventListener("click", () => ctl.abort());

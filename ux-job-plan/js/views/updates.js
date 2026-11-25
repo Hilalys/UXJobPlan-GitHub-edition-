@@ -1,8 +1,6 @@
-// What's new: articles, videos, resources, industry news and events found every Sunday at 5:33 a.m.
-// A scheduled task writes one document per run (feed/<date>); this page reads them, newest first,
-// and keeps their likes (with a copy of each item) and read marks in their own data.
+// What's new: read the public feed or Claude's scheduled feed; keep likes and read marks separately.
 
-import { S, save, getFeedRuns, getFeedState } from "../store.js";
+import { S, save, getFeedRuns, getFeedState, getFeedSource } from "../store.js";
 import { esc, today, fmtDate, fmtTime, safeUrl, host, uid, addDays, parseYmd } from "../util.js";
 import { icon, toast } from "../ui.js";
 import { openEventSheet, guessEventType } from "../forms.js";
@@ -80,7 +78,8 @@ const sortKey = it => it.published || it.firstFound || "";
 export const latestRun = () => getFeedRuns().reduce((m, r) => (String(r.run || "") > m ? String(r.run) : m), "");
 const isRead = it => !!S.feed.read[it.id];
 const isLiked = it => !!S.feed.liked[it.id];
-const isNew = (it, run) => !!run && it.firstFound === run && !isRead(it);
+const isNew = (it, run) => !!run && it.firstFound === run && !isRead(it) &&
+  (getFeedSource() !== "public" || it.published >= addDays(today(), -7));
 export const newCount = () => { if (!S.feed) return 0; const run = latestRun(); return run ? allItems().filter(it => isNew(it, run)).length : 0; };
 
 function nextSunday() {
@@ -138,6 +137,8 @@ function view() {
 export function renderUpdates() {
   const { items, run, base, list } = view();
   const state = getFeedState();
+  const publicFeed = getFeedSource() === "public";
+  const schedule = publicFeed ? "Updated weekly from public design publications" : `Next update Sunday, ${fmtDate(nextSunday(), { year: true })} at 5:33 a.m.`;
   const count = (f) => base.filter(f).length;
   const topics = [...new Set(base.flatMap(it => it.topics))].map(t => [t, topicName(t), count(it => it.topics.includes(t))]).sort((a, b) => b[2] - a[2] || a[1].localeCompare(b[1]));
   const types = FEED_TYPES.filter(t => base.some(it => it.type === t)).map(t => [t, t, count(it => it.type === t)]);
@@ -145,22 +146,21 @@ export function renderUpdates() {
   const liked = items.filter(isLiked).length, unread = items.filter(it => !isRead(it)).length, fresh = run ? items.filter(it => isNew(it, run)).length : 0;
   const filtered = !!(F.q || F.topic || F.type || F.source || statusOn());
   const runRow = getFeedRuns().find(r => r.run === run);
-  const lastLine = run ? `Last update ${fmtDate(run, { dow: true, year: true })}${runRow?.items ? ` · ${runRow.items.length} item${runRow.items.length === 1 ? "" : "s"}` : ""}` : "No update yet";
+  const lastLine = run ? `Last update ${fmtDate(run, { dow: true, year: true })}${!publicFeed && runRow?.items ? ` · ${runRow.items.length} item${runRow.items.length === 1 ? "" : "s"}` : ""}` : publicFeed && items.length ? "Starter reading list" : "No update yet";
   const note = state === "slow" ? `<p class="hint warn-note" role="status">${icon("alert", "sm")}Can't reach your saved updates yet. What's shown may be out of date.</p>`
-    : state === "error" ? `<p class="hint warn-note" role="status">${icon("alert", "sm")}Couldn't load the weekly updates. Reload the page to try again.</p>`
-    : state === "local" ? `<p class="hint muted small">Weekly updates are saved to your account. Open the tool from Claude to see them.</p>` : "";
+    : state === "error" ? `<p class="hint warn-note" role="status">${icon("alert", "sm")}${items.length ? "Couldn't refresh the weekly updates. Showing saved items." : "Couldn't load the weekly updates."} Reload the page to try again.</p>` : "";
 
   const empty = !items.length
-    ? `<div class="empty">${icon("news")}<b>${state === "loading" ? "Loading updates…" : "Your first update is on its way"}</b>${state === "loading" ? "" : `Every Sunday at 5:33 a.m. Claude searches NN/g first, then other sources on your skills, industry news and local and online events, and adds what it finds here. (This needs the weekly scheduled task in Claude; in other places this page stays empty.)`}</div>`
+    ? `<div class="empty">${icon("news")}<b>${state === "loading" ? "Loading updates…" : state === "error" ? "Updates unavailable" : "No updates yet"}</b>${state === "loading" || state === "error" ? "" : publicFeed ? "The latest links will appear here after the next successful refresh." : "Updates appear here when the weekly task in Claude is set up and has run."}</div>`
     : tab === "unread" && !base.length ? `<div class="empty">${icon("check")}<b>You're all caught up</b>Nothing unread right now. New items arrive with the next Sunday update.</div>`
     : tab === "read" && !base.length ? `<div class="empty">${icon("check")}<b>Nothing read yet</b>Press Mark read on an item and it moves here.</div>`
     : tab === "liked" && !base.length ? `<div class="empty">${icon("heart")}<b>Nothing liked yet</b>Press Like on an item to keep it here. Liked items stay even after older weeks are cleared.</div>`
     : `<div class="empty"><b>Nothing matches</b>${filtered ? `<button class="btn btn-sm" type="button" data-act="fd-clear">Clear filters</button>` : ""}</div>`;
 
   return `<header class="page-h"><div><div class="eyebrow">Stay current</div><h1>What's new</h1>
-      <p class="lead">New articles, videos, resources, industry news and events for your skills. Every Sunday at 5:33 a.m. Claude searches the Nielsen Norman Group first, then other trusted sources, and adds what it finds here, newest first.</p></div>
+      <p class="lead">${publicFeed ? "A weekly reading list from UX design publications, newest first. Like an article, mark it read or save it to your library." : "New articles, videos, resources, industry news and events for your skills from the weekly Claude task."}</p></div>
     <div class="fd-stats" aria-label="Summary"><span><b>${fresh}</b> new this week</span><span><b>${unread}</b> unread</span><span><b>${liked}</b> liked</span></div></header>
-  <p class="fd-run small muted">${icon("clock", "sm")}<span>${esc(lastLine)} · Next update Sunday, ${esc(fmtDate(nextSunday(), { year: true }))} at 5:33 a.m.</span></p>
+  <p class="fd-run small muted">${icon("clock", "sm")}<span>${esc(lastLine)} · ${esc(schedule)}</span></p>
   ${note}
   <nav class="subnav" aria-label="What's new sections"><a href="#updates" ${tab === "all" ? `aria-current="page"` : ""}>All updates <span class="muted">${items.length}</span></a><a href="#updates-unread" ${tab === "unread" ? `aria-current="page"` : ""}>Unread <span class="muted">${unread}</span></a><a href="#updates-read" ${tab === "read" ? `aria-current="page"` : ""}>${icon("check", "sm")}Read <span class="muted">${items.length - unread}</span></a><a href="#updates-liked" ${tab === "liked" ? `aria-current="page"` : ""}>${icon("heart", "sm")}Liked <span class="muted">${liked}</span></a></nav>
   <section class="card" aria-labelledby="fd-h">

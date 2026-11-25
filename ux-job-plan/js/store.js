@@ -325,7 +325,7 @@ export async function init() {
   try {
     if (window.claude && typeof window.claude.use === "function") db = await withTimeout(window.claude.use("db"), 10000);
   } catch { db = null; }
-  if (!db) { ready = true; setStatus("local"); return; }
+  if (!db) { ready = true; setStatus("local"); void loadPublicFeed(); return; }
 
   await new Promise(resolve => {
     let left = KEYS.length;
@@ -360,15 +360,41 @@ export async function init() {
   subscribeFeed();
 }
 
-// ---------- What's new: weekly runs written by the Sunday scheduled task ----------
-// Each run is one document, feed/<YYYY-MM-DD>, holding that week's items. The page only reads them.
+// ---------- What's new ----------
 const FEED_LS = LS + "feedruns";
-let feedRuns = (() => { try { const v = JSON.parse(localStorage.getItem(FEED_LS) || "null"); return Array.isArray(v) ? v : []; } catch { return []; } })();
+const PUBLIC_FEED_LS = LS + "publicfeed";
+function readFeed(key) {
+  try { const v = JSON.parse(localStorage.getItem(key) || "null"); return Array.isArray(v) ? v : []; }
+  catch { return []; }
+}
+let feedRuns = readFeed(FEED_LS);
 let feedState = "idle";
+let feedSource = "claude";
 export const getFeedRuns = () => feedRuns;
 export const getFeedState = () => feedState;
+export const getFeedSource = () => feedSource;
+
+async function loadPublicFeed() {
+  feedSource = "public";
+  feedRuns = readFeed(PUBLIC_FEED_LS);
+  feedState = "loading";
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 10000);
+  try {
+    const response = await fetch(new URL("../data/updates.json", import.meta.url), { signal: controller.signal });
+    if (!response.ok) throw new Error(`Feed HTTP ${response.status}`);
+    const runs = await response.json();
+    if (!Array.isArray(runs) || !runs.length || !runs.every(r => r && typeof r.run === "string" && Array.isArray(r.items))) throw new Error("Invalid feed");
+    feedRuns = runs;
+    feedState = "ready";
+    try { localStorage.setItem(PUBLIC_FEED_LS, JSON.stringify(feedRuns)); } catch { /* storage full */ }
+  } catch { feedState = "error"; }
+  finally { clearTimeout(timeout); }
+  remoteFns.forEach(f => f("feedruns"));
+}
+
 function subscribeFeed() {
-  if (!db) { feedState = "local"; return; }
+  if (!db) { void loadPublicFeed(); return; }
   feedState = "loading";
   const timer = setTimeout(() => { if (feedState === "loading") { feedState = "slow"; remoteFns.forEach(f => f("feedruns")); } }, 10000);
   try {

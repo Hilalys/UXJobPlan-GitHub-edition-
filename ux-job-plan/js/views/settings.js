@@ -12,9 +12,23 @@ import { esc, fmtDate, dowLong, parseYmd, today, toCsv, sum, $ } from "../util.j
 import { icon, sheet, toast, confirmSheet } from "../ui.js";
 import * as M from "../model.js";
 import { bus } from "../bus.js";
+import { usesClaude } from "../ai.js";
+import { browserAiStatus, prepareBrowserAi } from "../browser-ai.js";
 
 let pendingRestore = null;
 let restoreError = "";
+let aiSetup = "";
+
+function aiSettings(st) {
+  const status = browserAiStatus();
+  if (usesClaude() || status === "available") return `
+    <label class="switch"><input type="checkbox" data-change="set-ai" ${st.aiOn ? "checked" : ""}> AI suggestions</label>
+    <p class="hint muted small">${usesClaude() ? "Suggestions you request use Claude." : "Suggestions use Chrome's built-in model and stay on this device."} AI doesn't search the web, so check what it suggests.</p>`;
+  if (status === "unavailable") return `<p class="hint muted small">On-device AI needs a supported desktop version of Chrome and compatible hardware. You can still use the planner without AI. <a href="https://developer.chrome.com/docs/ai/get-started#hardware" target="_blank" rel="noopener noreferrer">Check Chrome's requirements</a>.</p>${aiSetup ? `<p role="alert">${esc(aiSetup)}</p>` : ""}`;
+  return `<p class="hint muted small">Chrome needs to download its AI model once. After that, AI suggestions run on this device without an account or API key.</p>
+    <div class="actions"><button type="button" class="btn" data-act="prepare-browser-ai" ${aiSetup.startsWith("Downloading") ? "disabled" : ""}>Set up on-device AI</button></div>
+    <p class="hint" id="browser-ai-status" role="status">${esc(aiSetup)}</p>`;
+}
 
 export function renderSettings() {
   const st = S.settings;
@@ -57,8 +71,7 @@ export function renderSettings() {
 
     <section class="card" aria-labelledby="sai-h"><div class="card-h"><h2 id="sai-h">${icon("sparkle")}AI</h2></div>
       <div class="card-b form">
-        <label class="switch"><input type="checkbox" data-change="set-ai" ${st.aiOn ? "checked" : ""}> AI suggestions</label>
-        <p class="hint muted small">When this page runs inside Claude, Claude can fill in skill pages, find resources, tailor your resume and give interview feedback, using what you write in About you. It works from its own knowledge, not a live web search, so check what it suggests. Opened anywhere else (for example on GitHub Pages), AI buttons stay hidden and everything else works by hand.</p>
+        ${aiSettings(st)}
       </div></section>
 
     <section class="card" aria-labelledby="sb-h"><div class="card-h"><h2 id="sb-h">${icon("download")}Backup and export</h2></div>
@@ -365,6 +378,28 @@ function setLoc(el) {
 const meSet = fn => { const me = normMe(S.settings.me); fn(me); S.settings.me = me; save("settings"); bus.render(); };
 
 export const settingsActions = {
+  "prepare-browser-ai": async (_data, event) => {
+    if (!["downloadable", "downloading"].includes(browserAiStatus()) || aiSetup.startsWith("Downloading")) return;
+    event.target.closest("button").disabled = true;
+    const progress = percent => {
+      aiSetup = percent == null ? "Downloading Chrome's AI model…" : `Downloading Chrome's AI model… ${percent}%`;
+      const status = document.getElementById("browser-ai-status");
+      if (status) status.textContent = aiSetup;
+    };
+    progress();
+    try {
+      await prepareBrowserAi(progress);
+      S.settings.aiOn = true;
+      save("settings");
+      aiSetup = "";
+      toast("On-device AI is ready");
+    } catch {
+      aiSetup = "Chrome couldn't set up its AI model. Check your connection and available disk space, then try again.";
+      toast(aiSetup);
+    }
+    bus.render();
+    document.querySelector('[data-change="set-ai"], [data-act="prepare-browser-ai"]')?.focus();
+  },
   "plan-rebuild": () => openRebuild(),
   "plan-restart": () => openRestart(),
   "setup-hide": () => { S.settings.setupHidden = true; save("settings"); bus.render(); }

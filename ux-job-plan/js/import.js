@@ -1,5 +1,5 @@
 // Import a resume they already have (PDF, Word, text or pasted) as a new, editable version.
-// The file is read in the browser; Claude only sorts the text into sections, word for word.
+// The file is read in the browser; AI can sort the text into sections.
 
 import { S, save } from "./store.js";
 import { esc, uid, today, $ } from "./util.js";
@@ -45,7 +45,7 @@ async function pdfText(doc) {
   }
   return out.join("\n").trim();
 }
-// For a scanned PDF with no text: pictures of the first pages, for Claude to read.
+// For a scanned PDF with no text: pictures of the first pages.
 async function pdfImages(doc) {
   const blobs = [];
   for (let p = 1; p <= Math.min(doc.numPages, 2); p++) {
@@ -225,7 +225,7 @@ export function openImportSheet() {
           let res;
           if (src.images?.length) {
             if (!ai || !(await canSendImages())) throw new Error("This PDF is a picture with no text in it. Open it, copy the text and paste it below, or export it again as a text PDF.");
-            setBusy(true, "Claude is reading the pages…");
+            setBusy(true, "AI is reading the pages…");
             res = cleanResume(await structure(src, { signal: mine.signal }));
           } else if (!src.text || src.text.replace(/\s/g, "").length < 40) {
             throw new Error("No text came out of that file. Paste the text below instead.");

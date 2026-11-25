@@ -5,7 +5,7 @@
 import { S, save } from "../store.js";
 import { esc, uid, today, fmtDate, $, $$ } from "../util.js";
 import { icon, sheet, toast } from "../ui.js";
-import { askJson, profileLine } from "../ai.js";
+import { aiVisible, askJson, profileLine } from "../ai.js";
 import { visible } from "../export.js";
 import { normDesign, presetDesign, SPACING, SIZES } from "../resume-design.js";
 import { curRes, refreshPreview, measureFill, touchRes } from "./resume.js";
@@ -86,7 +86,7 @@ export function openReview({ last = false } = {}) {
   const r = curRes();
   let ctl = null;
   sheet({
-    title: "Review my resume", sub: `Claude reads "${r.name}" like a design hiring manager and a recruiter, scores it, and suggests fixes you can apply one at a time.`, wide: true,
+    title: "Review my resume", sub: `AI reviews "${r.name}" from a hiring perspective and suggests fixes you can apply one at a time.`, wide: true,
     body: `<div data-out></div>`,
     foot: `<button class="btn btn-ghost" type="button" data-close>Close</button><button class="btn" type="button" data-again>${icon("sparkle", "sm")}Review again</button>`,
     onClose: () => ctl && ctl.abort(),
@@ -113,7 +113,7 @@ export function openReview({ last = false } = {}) {
           <div class="rv-fix-acts">${act}${hit ? `<button class="btn btn-sm btn-ghost" type="button" data-goto="${esc(f.target)}">Go to it</button>` : ""}</div></li>`;
       };
       const run = async () => {
-        out.innerHTML = wait("Claude is reading your resume. This takes about half a minute.");
+        out.innerHTML = wait("AI is reading your resume. This takes about half a minute.");
         ctl = new AbortController();
         const fill = measureFill(r);
         try {
@@ -170,7 +170,7 @@ export function openSummary(secId) {
   let ctl = null;
   sheet({
     title: summary ? (s && s.text.trim() ? "Improve your summary" : "Write your summary") : `Improve "${title}"`,
-    sub: "Claude writes three options from your resume. Pick one, then make it sound like you.", wide: true,
+    sub: "AI drafts three options from your resume. Pick one, then make it sound like you.", wide: true,
     body: `<div class="form">
       ${summary ? `<div class="field"><label for="sm-role">Roles you're applying for</label><input id="sm-role" type="text" maxlength="160" value="${esc(S.settings.profile.target || "Product Designer roles")}"></div>
       <fieldset class="field as-fs"><legend class="lbl">What to lead with <span class="muted">(optional)</span></legend><div class="chips">${FOCUS.map(f => `<label class="chip evp-chip"><input type="checkbox" value="${esc(f)}">${esc(f)}</label>`).join("")}</div></fieldset>` : ""}
@@ -224,10 +224,10 @@ export function openNotes(secId, itemId) {
   let ctl = null;
   const kind = s.type === "projects" ? "project" : s.type === "education" ? "school" : "role";
   sheet({
-    title: "Write bullets from notes", sub: `${[it.org, it.role].filter(Boolean).join(" · ") || "This entry"}. Write what you did in your own words; Claude turns it into resume bullets.`, wide: true,
+    title: "Write bullets from notes", sub: `${[it.org, it.role].filter(Boolean).join(" · ") || "This entry"}. Write what you did in your own words; AI turns it into resume bullets.`, wide: true,
     body: `<div class="form">
       <div class="field"><label for="nt-n">What did you do in this ${kind}?</label><textarea id="nt-n" rows="6" maxlength="2500" placeholder="Rough notes are fine: what you worked on, who with, the tools, what changed because of your work, anything you measured."></textarea>
-        <p class="hint">Include real numbers if you have them (users, screens, time saved). Claude won't make any up.</p></div>
+        <p class="hint">Include real numbers if you have them (users, screens, time saved). Check the draft before using it.</p></div>
       <div class="field"><span class="lbl">How many bullets</span><div class="seg-ctl">${[3, 4, 5].map((n, i) => `<label><input type="radio" name="nt-c" value="${n}" ${i === 0 ? "checked" : ""}><span>${n}</span></label>`).join("")}</div></div>
       <div><button class="btn btn-primary" type="button" data-go>${icon("sparkle", "sm")}Write bullets</button></div><div data-out></div></div>`,
     foot: `<button class="btn btn-ghost" type="button" data-close>Close</button>`,
@@ -277,7 +277,7 @@ export function openSkills(secId) {
   if (!s) return;
   let ctl = null;
   sheet({
-    title: "Suggest skills", sub: "Claude suggests skills from your resume and your Skills page. Add only what you could talk about in an interview.", wide: true,
+    title: "Suggest skills", sub: "AI suggests skills from your resume and your Skills page. Add only what you could talk about in an interview.", wide: true,
     body: `<div data-out></div>`,
     foot: `<button class="btn btn-ghost" type="button" data-close>Close</button>`,
     onClose: () => ctl && ctl.abort(),
@@ -336,7 +336,7 @@ export function openFit() {
     title: "Fit on one page", sub: "Recruiters expect one page at your level. Tighten the design first, then cut what matters least.", wide: true,
     body: `<div data-fill class="fit-now"></div>
       <h3 class="rv-h">Tighten the design</h3><div data-quick class="fit-quick"></div>
-      ${S.settings.aiOn ? `<h3 class="rv-h">Cut or shorten</h3><p class="small muted">Claude suggests the least important lines to cut or shorten, without losing what's most relevant.</p>
+      ${aiVisible() ? `<h3 class="rv-h">Cut or shorten</h3><p class="small muted">AI suggests lines to cut or shorten without losing what's most relevant.</p>
       <div><button class="btn btn-primary" type="button" data-go>${icon("sparkle", "sm")}Suggest cuts</button></div><div data-out></div>` : ""}`,
     foot: `<button class="btn btn-ghost" type="button" data-close>Done</button>`,
     onClose: () => ctl && ctl.abort(),

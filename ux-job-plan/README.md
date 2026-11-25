@@ -22,6 +22,7 @@ No account, no server, no build step. Your data stays in your browser.
 | **Portfolio** | Case-study planner with sections, a checklist and your personal site's launch list. |
 | **Interview prep** | Company loops, portfolio presentation, design challenges, a story bank and timed practice. |
 | **Applications and strategy** | Pipeline from saved to offer, response rates, tiers, weekly goals, contacts and local design communities. |
+| **What's new** | Weekly links from UX publications. Like, mark as read, or save articles to your library. |
 
 ## How it works
 
@@ -61,13 +62,15 @@ Screenshots show demo data for a fictional designer in Austin, TX.
 ES modules don't load from `file://`, so serve the folder with any static server:
 
 ```bash
-python3 -m http.server 8000
+python3 -m http.server 8000 --directory ux-job-plan
 # open http://localhost:8000
 ```
 
 ### GitHub Pages
 
-Fork or push the repo, then **Settings → Pages → Deploy from a branch → `main` / root**. It's served at `https://<user>.github.io/<repo>/`.
+From the GitHub repository, choose **Settings → Pages → Source → GitHub Actions**. Then go to **Actions → Publish UX Job Plan → Run workflow** on `main`. The workflow publishes the `ux-job-plan/` folder at `https://<user>.github.io/<repo>/`. It also runs on pushes to `main` and every Sunday. Fork owners may need to enable scheduled workflows in **Actions**.
+
+The workflow collects public links from Nielsen Norman Group and Smashing Magazine. No job-search data is involved. If neither publisher can be reached, the workflow leaves the previous deployment in place. The local app includes starter articles without needing the workflow.
 
 ## Start over, reset and backup
 
@@ -77,11 +80,13 @@ Fork or push the repo, then **Settings → Pages → Deploy from a branch → `m
 
 ## AI features
 
-When the app runs inside Claude (as a Claude artifact), AI buttons fill in skill plans, tailor your resume and give interview feedback, and a weekly scheduled task can fill **What's new**. On GitHub Pages or a local server those buttons stay hidden and everything else works by hand.
+On GitHub Pages or localhost, go to **Settings → AI** in a [supported desktop version of Chrome](https://developer.chrome.com/docs/modern-web-guidance/guides/built-in-ai/language-model). Choose **Set up on-device AI** if Chrome needs to download its model, or turn on **AI suggestions** if it is already installed. No account or API key is needed. This is optional: the planner and weekly reading list work in other browsers too.
+
+AI can help draft skill plans, tailor resume text, and give practice feedback. It doesn't browse the web, and drafts can be wrong, so review them before using them. Inside a Claude artifact, the existing Claude AI and scheduled feed still work when enabled there.
 
 ## Privacy
 
-Everything is stored in your browser's `localStorage` (keys start with `uxjp:`). Nothing is sent anywhere.
+On GitHub Pages and localhost, your planner data and reading history are stored in your browser's `localStorage` (keys start with `uxjp:`). Chrome downloads its AI model once and then runs suggestions on your device. The public feed is the same for every visitor. If you instead use the app as a Claude artifact, the artifact may use your Claude account to sync data or generate suggestions.
 
 ## Project layout
 
