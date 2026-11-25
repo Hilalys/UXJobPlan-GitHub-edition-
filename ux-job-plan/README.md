@@ -1,18 +1,16 @@
 # UX Job Plan
 
+## Watch the demo
+
+[![Watch the 56-second narrated UX Job Plan walkthrough](review/ux-job-plan-demo.jpg)](review/ux-job-plan-demo.mp4)
+
+[Watch or download the MP4](review/ux-job-plan-demo.mp4) · [English captions](review/ux-job-plan-demo.vtt)
+
 **A free, open-source weekly plan and job-search toolkit for UX and product designers.** 25 weeks of real courses, case-study projects and job-search tasks, a skills tracker, resume and portfolio tools, and interview prep, all in one browser app. Set your city and where you're starting from, and the plan rebuilds around you.
 
 No account, no server, no build step. Your data stays in your browser.
 
 ![Overview: this week's tasks, hours, applications and skill growth](docs/screenshots/overview.png)
-
-## Watch the demo
-
-Follow a task from Weekly Plan to Weekly Review, then see how to track an application, save an article, and preview a personalized plan.
-
-[![Watch the narrated UX Job Plan walkthrough](review/ux-job-plan-demo.jpg)](review/ux-job-plan-demo.mp4)
-
-[Watch or download the MP4](review/ux-job-plan-demo.mp4) · [English captions](review/ux-job-plan-demo.vtt)
 
 ## Features
 
