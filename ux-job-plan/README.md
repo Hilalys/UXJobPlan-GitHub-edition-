@@ -8,6 +8,8 @@ No account, no server, no build step. Your data stays in your browser.
 
 ## Watch the demo
 
+Follow a task from Weekly Plan to Weekly Review, then see how to track an application, save an article, and preview a personalized plan.
+
 [![Watch the narrated UX Job Plan walkthrough](review/ux-job-plan-demo.jpg)](review/ux-job-plan-demo.mp4)
 
 [Watch or download the MP4](review/ux-job-plan-demo.mp4) · [English captions](review/ux-job-plan-demo.vtt)
@@ -47,7 +49,7 @@ No account, no server, no build step. Your data stays in your browser.
 
 If you skip step 3, you get the full built-in plan with every skill starting at 0.
 
-![Settings: About you shapes the plan](docs/screenshots/settings-about.png)
+![Settings → About you: set weekly hours, choose a goal, and update your skill levels](docs/screenshots/settings-about.png)
 
 ## Screenshots
 

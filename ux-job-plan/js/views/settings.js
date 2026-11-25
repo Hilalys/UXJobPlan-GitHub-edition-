@@ -283,35 +283,46 @@ function locationCard(st) {
 function aboutCard(st, me) {
   const pv = previewPlan();
   const p = st.profile;
-  const lvlSel = sk => `<label class="sr-only" for="lv-${sk.id}">${esc(sk.name)}: your level</label><select id="lv-${sk.id}" class="inline-sel" data-change="set-me-level" data-id="${sk.id}">${LEVEL_WORDS.map((w, i) => `<option value="${i}" ${levelOf(me, sk.id) === i ? "selected" : ""}>${i} · ${w}</option>`).join("")}</select>`;
-  const rows = SKILLS.map(sk => `<tr><th scope="row">${esc(sk.name)}</th><td>${lvlSel(sk)}</td>
-    <td><label class="chk-inline"><input type="checkbox" data-change="set-me-focus" data-id="${sk.id}" ${me.focus.includes(sk.id) ? "checked" : ""}><span class="sr-only">Focus on ${esc(sk.name)}</span></label></td>
-    <td class="muted">${targetOf(me, sk)}</td></tr>`).join("");
+  const rows = SKILLS.map(sk => `<li class="about-skill">
+    <span class="about-skill-name">${esc(sk.name)}</span>
+    <div class="about-skill-controls">
+      <select aria-label="Level for ${esc(sk.name)}" data-change="set-me-level" data-id="${sk.id}">${LEVEL_WORDS.map((w, i) => `<option value="${i}" ${levelOf(me, sk.id) === i ? "selected" : ""}>${i} · ${w}</option>`).join("")}</select>
+      <label class="about-option"><input type="checkbox" data-change="set-me-focus" data-id="${sk.id}" ${me.focus.includes(sk.id) ? "checked" : ""}><span>Focus<span class="sr-only"> on ${esc(sk.name)}</span></span></label>
+      <span class="about-skill-target">Target <b>${targetOf(me, sk)}</b></span>
+    </div></li>`).join("");
   return `<section class="card about-card" aria-labelledby="sme-h"><div class="card-h"><h2 id="sme-h">${icon("idcard")}About you</h2><span class="sub">Shapes your plan</span></div>
-    <div class="card-b form">
-      <p class="hint muted small" style="margin-top:0">Optional. Leave it as it is and you get the full built-in plan, with every skill starting at 0. Fill it in and rebuild to fit the plan to you. Everything stays on this device${hasCloud() ? " and in your account" : ""}.</p>
+    <div class="card-b about-form">
+      <p class="about-hint">Optional. You can use the full plan as it is or customize it here and rebuild. Your planner data is saved ${hasCloud() ? "on this device and in your account" : "on this device"}.</p>
+      <section class="about-section" aria-labelledby="me-profile">
+      <h3 id="me-profile">Your background</h3>
       <div class="loc-grid">
         <div class="field"><label for="pf-name">Name</label><input id="pf-name" type="text" value="${esc(p.name)}" data-change="set-profile" data-f="name" maxlength="80" autocomplete="name"></div>
         <div class="field"><label for="pf-role">Current title</label><input id="pf-role" type="text" value="${esc(p.role)}" data-change="set-profile" data-f="role" maxlength="120" placeholder="e.g. UI/UX Designer, student"></div>
       </div>
       <div class="field"><label for="pf-target">What you're looking for</label><input id="pf-target" type="text" value="${esc(p.target)}" data-change="set-profile" data-f="target" maxlength="200" placeholder="e.g. Product or UX Designer roles, mobile and web"></div>
-      <div class="field"><label for="pf-summary">Your experience, in a few lines</label><textarea id="pf-summary" rows="5" data-change="set-profile" data-f="summary" maxlength="4000" placeholder="Roles, years, tools, projects, what you're building now.">${esc(p.summary || "")}</textarea>
-        <p class="hint">AI features read this to know your experience. They never add facts that aren't here or in your resume.</p></div>
+      <div class="field"><label for="pf-summary">Your experience, in a few lines</label><textarea id="pf-summary" rows="4" data-change="set-profile" data-f="summary" maxlength="4000" aria-describedby="me-summary-hint" placeholder="Roles, years, tools, projects, what you're building now.">${esc(p.summary || "")}</textarea>
+        <p class="about-hint" id="me-summary-hint">Optional AI suggestions use this context. Review suggestions for accuracy.</p></div>
+      </section>
 
-      <h3 class="h-sm" style="margin-top:6px">Your plan</h3>
-      <div class="loc-grid">
-        <div class="field"><label for="me-hours">Hours a week</label><input id="me-hours" type="number" min="5" max="60" step="1" inputmode="numeric" value="${me.hours}" data-change="set-me-hours" style="max-width:120px">
-          <p class="hint">The built-in plan assumes 35. Fewer hours spread it over more weeks.</p></div>
-        <fieldset class="field" style="border:0;padding:0;margin:0"><legend class="lbl">Goal</legend>
-          ${Object.entries(MODES).map(([k, l]) => `<label class="switch" style="display:flex"><input type="radio" name="me-mode" value="${k}" data-change="set-me-mode" ${me.mode === k ? "checked" : ""}> ${l}</label>`).join("")}</fieldset>
+      <section class="about-section" aria-labelledby="me-plan">
+      <h3 id="me-plan">Your plan</h3>
+      <div class="about-plan-fields">
+        <div class="field"><label for="me-hours">Hours a week</label><input id="me-hours" type="number" min="5" max="60" step="1" inputmode="numeric" value="${me.hours}" data-change="set-me-hours" aria-describedby="me-hours-hint">
+          <p class="about-hint" id="me-hours-hint">The default is 35 hours. Fewer hours spread the plan over more weeks.</p></div>
+        <fieldset><legend>Goal</legend>
+          ${Object.entries(MODES).map(([k, l]) => `<label class="about-option"><input id="me-mode-${k}" type="radio" name="me-mode" value="${k}" data-change="set-me-mode" ${me.mode === k ? "checked" : ""}><span>${l}</span></label>`).join("")}</fieldset>
+        <fieldset><legend>I already have</legend>
+          ${HAVES.map(([k, l, h]) => `<label class="about-option" data-tip="${esc(h)}"><input type="checkbox" data-change="set-me-have" data-k="${k}" ${me.have.includes(k) ? "checked" : ""}><span>${l}</span></label>`).join("")}</fieldset>
       </div>
-      <fieldset class="field" style="border:0;padding:0;margin:0"><legend class="lbl">I already have</legend>
-        ${HAVES.map(([k, l, h]) => `<label class="switch" style="display:flex" data-tip="${esc(h)}"><input type="checkbox" data-change="set-me-have" data-k="${k}" ${me.have.includes(k) ? "checked" : ""}> ${l}</label>`).join("")}</fieldset>
-      <div class="field"><span class="lbl" id="me-sk-l">Where you are with each skill</span>
-        <p class="hint" style="margin-top:0">0 is new to it, 5 is expert. Learning tasks for skills already at their target are left out. Focus raises a skill's target by one and keeps all its tasks.</p>
-        <div class="scroll-x"><table class="loop-t me-skills" aria-labelledby="me-sk-l"><thead><tr><th scope="col">Skill</th><th scope="col">Your level</th><th scope="col">Focus</th><th scope="col">Target</th></tr></thead><tbody>${rows}</tbody></table></div></div>
-      <div class="rebuild-bar" role="status">
-        <p><b>${pv.weeks} weeks</b> · ${pv.tasks} tasks · ${Math.round(pv.hours)} hours${pv.skipped ? ` · ${pv.skipped} left out` : ""}<br><span class="muted small">${me.built ? "Your plan was built from this profile. Rebuild after changes." : "Changes apply when you rebuild the plan."}</span></p>
+      </section>
+
+      <section class="about-section" aria-labelledby="me-sk-l">
+        <div><h3 id="me-sk-l">Your skill levels</h3>
+        <p class="about-hint">Choose your level from 0 (new) to 5 (expert). Reaching the target skips that skill's learning tasks. Focus raises the target by one and keeps those tasks.</p></div>
+        <ul class="about-skills" role="list">${rows}</ul>
+      </section>
+      <div class="rebuild-bar">
+        <p role="status"><b>${pv.weeks} weeks</b> · ${pv.tasks} tasks · ${Math.round(pv.hours)} hours${pv.skipped ? ` · ${pv.skipped} left out` : ""}<br><span class="about-hint">${me.built ? "Your plan was built from this profile. Rebuild after changes." : "Changes apply when you rebuild the plan."}</span></p>
         <button class="btn btn-primary" type="button" data-act="plan-rebuild">${icon("wand", "sm")}Rebuild my plan</button>
       </div>
     </div></section>`;
