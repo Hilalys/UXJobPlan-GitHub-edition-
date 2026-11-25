@@ -12,6 +12,16 @@ No account, no server, no build step. Your data stays in your browser.
 
 ![Overview: this week's tasks, hours, applications and skill growth](docs/screenshots/overview.png)
 
+## How to use this tool
+
+1. [Open UX Job Plan](https://hilalys.github.io/UXJobPlan-GitHub-edition-/) in your browser. No GitHub account, installation, or coding is needed. If the link shows a GitHub 404 page, the app hasn't been published yet.
+2. **Pick a task.** Open **Weekly plan**, select a task to see its steps, links, and estimated time, then check it off when you're done.
+3. **Personalize your plan (optional).** In the app, use **Settings → About you** to set your weekly hours, goal, and current skill levels. Choose **Rebuild my plan**, then pick a start date. If you want local links and events, add your city under **Settings → Location**.
+4. **Keep track each week.** Check **Weekly review** for progress, and use **Applications** to save roles and track next steps.
+5. **Keep a backup.** The app saves progress in the browser you use. Go to **Settings → Backup and export → Download backup** before switching browsers or clearing browser data.
+
+![Settings → About you: set weekly hours, choose a goal, and update your skill levels](docs/screenshots/settings-about.png)
+
 ## Features
 
 | | |
@@ -38,17 +48,6 @@ No account, no server, no build step. Your data stays in your browser.
 
 ![Your week: plan, today, stopwatch, review](docs/images/weekly-loop.svg)
 
-## Getting started
-
-1. Open the app (see **Run it** below).
-2. Go to **Settings → Location** and add your city, region, country and nearby cities. Job alerts, meetups, the library card task, communities and checklists use it. Leave it empty for a location-free plan.
-3. Fill in **Settings → About you**: your experience, hours a week, goal (job search or learning only), what you already have, and your level (0–5) in each skill. Mark the skills you want to focus on.
-4. Press **Rebuild my plan** and choose when Week 1 starts.
-
-If you skip step 3, you get the full built-in plan with every skill starting at 0.
-
-![Settings → About you: set weekly hours, choose a goal, and update your skill levels](docs/screenshots/settings-about.png)
-
 ## Screenshots
 
 | Weekly plan | Skills |
@@ -63,7 +62,7 @@ If you skip step 3, you get the full built-in plan with every skill starting at 
 
 Screenshots show demo data for a fictional designer in Austin, TX.
 
-## Run it
+## Run it yourself (for contributors)
 
 ES modules don't load from `file://`, so serve the folder with any static server:
 
