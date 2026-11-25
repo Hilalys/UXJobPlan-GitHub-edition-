@@ -8,9 +8,9 @@ No account, no server, no build step. Your data stays in your browser.
 
 ## Watch the demo
 
-[![Watch the narrated UX Job Plan walkthrough](review/ux-job-plan-demo.jpg)](https://github.com/user-attachments/assets/8cf958c5-098d-4149-9e4c-488783f9c17b)
+[![Watch the narrated UX Job Plan walkthrough](review/ux-job-plan-demo.jpg)](review/ux-job-plan-demo.mp4)
 
-[Download the MP4](review/ux-job-plan-demo.mp4?raw=true) · [English captions](review/ux-job-plan-demo.vtt)
+[Watch or download the MP4](review/ux-job-plan-demo.mp4) · [English captions](review/ux-job-plan-demo.vtt)
 
 ## Features
 
