@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 400" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect width="960" height="400" rx="16" fill="#ffffff"/>
+  <text x="40" y="52" font-size="22" font-weight="700" fill="#1c1b22">25 weeks, four phases, about 850 hours</text>
+  <text x="40" y="78" font-size="14" fill="#5c5a66">Every week mixes four tracks; the split shifts as the work changes. Week counts are for the built-in 35-hour plan.</text>
+  <!-- phase bars, width proportional to weeks: 860px / 25 weeks = 34.4 per week -->
+  <g font-size="13">
+    <rect x="40" y="104" width="168" height="120" rx="10" fill="#fbe9ee" stroke="#a3123a" stroke-width="1.5"/>
+    <text x="56" y="130" font-weight="700" fill="#a3123a">PHASE 1 · WEEKS 1–5</text>
+    <text x="56" y="154" font-size="16" font-weight="700" fill="#1c1b22">Get search-ready</text>
+    <text x="56" y="178" fill="#3d3b45">Resume, LinkedIn,</text>
+    <text x="56" y="196" fill="#3d3b45">first live case study</text>
+
+    <rect x="216" y="104" width="374" height="120" rx="10" fill="#ecebfd" stroke="#4338ca" stroke-width="1.5"/>
+    <text x="232" y="130" font-weight="700" fill="#4338ca">PHASE 2 · WEEKS 6–16</text>
+    <text x="232" y="154" font-size="16" font-weight="700" fill="#1c1b22">Research to AI prototype</text>
+    <text x="232" y="178" fill="#3d3b45">Run your own user study, then turn it into a</text>
+    <text x="232" y="196" fill="#3d3b45">tested AI prototype and a case study</text>
+
+    <rect x="598" y="104" width="133" height="120" rx="10" fill="#fdf1e3" stroke="#b45309" stroke-width="1.5"/>
+    <text x="612" y="130" font-weight="700" fill="#b45309">PHASE 3 · 17–20</text>
+    <text x="612" y="154" font-size="14" font-weight="700" fill="#1c1b22">Interview-ready</text>
+    <text x="612" y="178" fill="#3d3b45">Portfolio talk,</text>
+    <text x="612" y="196" fill="#3d3b45">mock loops</text>
+
+    <rect x="739" y="104" width="181" height="120" rx="10" fill="#e3f4f1" stroke="#0f766e" stroke-width="1.5"/>
+    <text x="755" y="130" font-weight="700" fill="#0f766e">PHASE 4 · 21–25</text>
+    <text x="755" y="154" font-size="16" font-weight="700" fill="#1c1b22">Deepen your craft</text>
+    <text x="755" y="178" fill="#3d3b45">Accessibility, data,</text>
+    <text x="755" y="196" fill="#3d3b45">writing, motion, code</text>
+  </g>
+  <!-- tracks: stacked bar of total hours 210 / 327 / 93 / 218 = 848 over 880px -->
+  <text x="40" y="268" font-size="15" font-weight="700" fill="#1c1b22">Hours by track, whole plan</text>
+  <g font-size="13" font-weight="600">
+    <rect x="40" y="282" width="218" height="40" fill="#4338ca"/>
+    <rect x="258" y="282" width="339" height="40" fill="#a3123a"/>
+    <rect x="597" y="282" width="96" height="40" fill="#b45309"/>
+    <rect x="693" y="282" width="227" height="40" fill="#0f766e"/>
+    <text x="54" y="307" fill="#ffffff">Learn · 210 h</text>
+    <text x="272" y="307" fill="#ffffff">Build · 327 h</text>
+    <text x="605" y="307" font-size="12" fill="#ffffff">Practice 93 h</text>
+    <text x="707" y="307" fill="#ffffff">Apply · 218 h</text>
+  </g>
+  <g font-size="13" fill="#5c5a66">
+    <text x="40" y="350">Learn: courses, books, videos</text>
+    <text x="258" y="350">Build: case studies, portfolio, resume</text>
+    <text x="597" y="350">Practice: critiques, mocks</text>
+    <text x="40" y="372">Apply: applications, coffee chats, events, referrals. Unfinished tasks carry into the next week automatically.</text>
+  </g>
+</svg>

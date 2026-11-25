@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 420" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#8a8794"/></marker></defs>
+  <rect width="960" height="420" rx="16" fill="#ffffff"/>
+  <text x="40" y="52" font-size="22" font-weight="700" fill="#1c1b22">How "Rebuild my plan" fits the plan to you</text>
+  <text x="40" y="78" font-size="14" fill="#5c5a66">Leave About you empty and you keep the full built-in plan, every skill at level 0.</text>
+  <g font-size="13">
+    <rect x="40" y="104" width="230" height="276" rx="12" fill="#f5f4f8" stroke="#d6d4de"/>
+    <text x="60" y="134" font-size="15" font-weight="700" fill="#1c1b22">You set (Settings)</text>
+    <text x="60" y="166" font-weight="600" fill="#1c1b22">Location</text>
+    <text x="60" y="184" fill="#5c5a66">city, region, nearby cities</text>
+    <text x="60" y="214" font-weight="600" fill="#1c1b22">Hours a week</text>
+    <text x="60" y="232" fill="#5c5a66">default 35</text>
+    <text x="60" y="262" font-weight="600" fill="#1c1b22">Goal</text>
+    <text x="60" y="280" fill="#5c5a66">job search, or learning only</text>
+    <text x="60" y="310" font-weight="600" fill="#1c1b22">I already have</text>
+    <text x="60" y="328" fill="#5c5a66">resume · LinkedIn · site</text>
+    <text x="60" y="356" font-weight="600" fill="#1c1b22">Skill levels 0–5 + focus</text>
+
+    <path d="M276 242H330" stroke="#8a8794" stroke-width="1.5" marker-end="url(#a)"/>
+
+    <rect x="336" y="104" width="330" height="276" rx="12" fill="#fbe9ee" stroke="#a3123a" stroke-width="1.5"/>
+    <text x="356" y="134" font-size="15" font-weight="700" fill="#a3123a">The rebuild</text>
+    <text x="356" y="166" fill="#1c1b22">1  Skip learning tasks for skills already</text>
+    <text x="374" y="184" fill="#1c1b22">at their target</text>
+    <text x="356" y="212" fill="#1c1b22">2  Focus skills: target +1, all tasks kept</text>
+    <text x="356" y="240" fill="#1c1b22">3  Skip setup you've already done</text>
+    <text x="356" y="268" fill="#1c1b22">4  Learning only: drop Apply tasks</text>
+    <text x="356" y="296" fill="#1c1b22">5  Pack the rest, in order, into weeks</text>
+    <text x="374" y="314" fill="#1c1b22">of your hours</text>
+    <text x="356" y="346" fill="#5c5a66">Ticks, your own tasks and edits are kept.</text>
+
+    <path d="M672 242H726" stroke="#8a8794" stroke-width="1.5" marker-end="url(#a)"/>
+
+    <rect x="732" y="104" width="188" height="276" rx="12" fill="#e3f4f1" stroke="#0f766e" stroke-width="1.5"/>
+    <text x="752" y="134" font-size="15" font-weight="700" fill="#0f766e">Your plan</text>
+    <text x="752" y="166" fill="#1c1b22">Weeks sized to</text>
+    <text x="752" y="184" fill="#1c1b22">your hours</text>
+    <text x="752" y="214" fill="#1c1b22">Local job alerts,</text>
+    <text x="752" y="232" fill="#1c1b22">meetups, library</text>
+    <text x="752" y="262" fill="#1c1b22">Skill targets and</text>
+    <text x="752" y="280" fill="#1c1b22">starting levels</text>
+    <text x="752" y="310" fill="#1c1b22">Weekly goals scaled</text>
+    <text x="752" y="328" fill="#1c1b22">to your pace</text>
+    <text x="752" y="358" fill="#5c5a66">20 h a week ≈ 40+ weeks</text>
+  </g>
+</svg>

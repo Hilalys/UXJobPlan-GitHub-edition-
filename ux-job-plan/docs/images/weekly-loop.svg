@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 300" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <defs><marker id="b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#8a8794"/></marker></defs>
+  <rect width="960" height="300" rx="16" fill="#ffffff"/>
+  <text x="40" y="52" font-size="22" font-weight="700" fill="#1c1b22">Your week in the app</text>
+  <text x="40" y="78" font-size="14" fill="#5c5a66">Plan on Monday, work from Today, log time as you go, review on Sunday.</text>
+  <g font-size="13">
+    <rect x="40" y="110" width="190" height="110" rx="12" fill="#f5f4f8" stroke="#d6d4de"/>
+    <text x="58" y="140" font-size="15" font-weight="700" fill="#1c1b22">1  Weekly plan</text>
+    <text x="58" y="166" fill="#5c5a66">This week's tasks by</text>
+    <text x="58" y="184" fill="#5c5a66">track, with links and</text>
+    <text x="58" y="202" fill="#5c5a66">planned hours</text>
+    <path d="M236 165H262" stroke="#8a8794" stroke-width="1.5" marker-end="url(#b)"/>
+    <rect x="268" y="110" width="190" height="110" rx="12" fill="#f5f4f8" stroke="#d6d4de"/>
+    <text x="286" y="140" font-size="15" font-weight="700" fill="#1c1b22">2  Today</text>
+    <text x="286" y="166" fill="#5c5a66">Drag tasks in; what's</text>
+    <text x="286" y="184" fill="#5c5a66">left carries to</text>
+    <text x="286" y="202" fill="#5c5a66">tomorrow</text>
+    <path d="M464 165H490" stroke="#8a8794" stroke-width="1.5" marker-end="url(#b)"/>
+    <rect x="496" y="110" width="190" height="110" rx="12" fill="#f5f4f8" stroke="#d6d4de"/>
+    <text x="514" y="140" font-size="15" font-weight="700" fill="#1c1b22">3  Stopwatch</text>
+    <text x="514" y="166" fill="#5c5a66">Log hours on a task,</text>
+    <text x="514" y="184" fill="#5c5a66">course or skill</text>
+    <path d="M692 165H718" stroke="#8a8794" stroke-width="1.5" marker-end="url(#b)"/>
+    <rect x="724" y="110" width="196" height="110" rx="12" fill="#fbe9ee" stroke="#a3123a" stroke-width="1.5"/>
+    <text x="742" y="140" font-size="15" font-weight="700" fill="#a3123a">4  Weekly review</text>
+    <text x="742" y="166" fill="#3d3b45">Hours vs plan, tasks,</text>
+    <text x="742" y="184" fill="#3d3b45">applications, skills;</text>
+    <text x="742" y="202" fill="#3d3b45">re-rate every 4 weeks</text>
+    <path d="M822 226V262H135V226" fill="none" stroke="#8a8794" stroke-width="1.5" marker-end="url(#b)"/>
+    <text x="380" y="282" fill="#5c5a66">Unfinished tasks move into the new week</text>
+  </g>
+</svg>
