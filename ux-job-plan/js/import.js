@@ -189,7 +189,7 @@ export function openImportSheet() {
         <label><input type="radio" name="imp-as" value="new" checked><span>A new version</span></label>
         <label><input type="radio" name="imp-as" value="master"><span>My master resume</span></label></div>
         <p class="hint">Replacing the master keeps an Undo for a few seconds. A new version leaves everything else as it is.</p></div>
-      <p class="hint">${ai ? "Claude sorts the text into sections (header, experience, education, skills) and keeps your wording exactly. Check it against your file afterward." : "AI is off, so sections are split at familiar headings like Experience and Education, and each line becomes an item you can edit. Turn on AI in Settings for a better split."}</p>
+      <p class="hint">${ai ? "AI sorts the text into sections such as experience, education, and skills. Check that it kept your original wording." : "Without AI, the app splits the text at familiar headings like Experience and Education. Each line becomes an item you can edit."}</p>
       <p class="error" data-err role="alert" hidden></p>
       <div data-wait role="status"></div>
       <button type="submit" tabindex="-1" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px">Import</button></form>`,
